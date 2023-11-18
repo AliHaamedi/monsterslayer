@@ -1,6 +1,10 @@
 package main
 
-import "github.com/alihaamedi/monster/interaction"
+import (
+	"fmt"
+
+	"github.com/alihaamedi/monster/interaction"
+)
 
 var currentRound = 0
 
@@ -26,6 +30,8 @@ func executeRound() string {
 	isSpecialRound := currentRound%3 == 0
 
 	interaction.ShowAvailableActions(isSpecialRound)
+	useChoice := interaction.GetPlayerChoice(isSpecialRound)
+	fmt.Println(useChoice)
 
 	return ""
 }
