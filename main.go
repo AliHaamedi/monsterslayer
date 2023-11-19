@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/alihaamedi/monster/actions"
 	"github.com/alihaamedi/monster/interaction"
 )
 
@@ -17,7 +16,7 @@ func main() {
 		winner = executeRound()
 	}
 
-	finishGame()
+	finishGame(winner)
 }
 
 func startGame() {
@@ -30,10 +29,44 @@ func executeRound() string {
 	isSpecialRound := currentRound%3 == 0
 
 	interaction.ShowAvailableActions(isSpecialRound)
-	useChoice := interaction.GetPlayerChoice(isSpecialRound)
-	fmt.Println(useChoice)
+	userChoice := interaction.GetPlayerChoice(isSpecialRound)
+
+	var playerAttackDmg int
+	var playerHealValue int
+	var monsterAttackDmg int
+
+	if userChoice == "ATTACK" {
+		playerAttackDmg = actions.AttackMonster(false)
+	} else if userChoice == "HEAL" {
+		playerHealValue = actions.HealPlayer()
+	} else {
+		playerAttackDmg = actions.AttackMonster(true)
+	}
+
+	monsterAttackDmg = actions.AttackPlayer()
+
+	playerHealth, monsterHealth := actions.GetHealthAmount()
+
+	roundData := interaction.RoundData{
+		Action:           userChoice,
+		PlayerHealth:     playerHealth,
+		MonsterHealth:    monsterHealth,
+		PlayerAttackDmg:  playerAttackDmg,
+		PlayerHealValue:  playerHealValue,
+		MonsterAttackDmg: monsterAttackDmg,
+	}
+
+	interaction.PrintRoundStatistics(&roundData)
+
+	if monsterHealth <= 0 {
+		return "player"
+	} else if playerHealth <= 0 {
+		return "monster"
+	}
 
 	return ""
 }
 
-func finishGame() {}
+func finishGame(winner string) {
+	interaction.DeclareWinner(winner)
+}
