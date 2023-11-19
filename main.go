@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/alihaamedi/monster/actions"
-	"github.com/alihaamedi/monster/interaction"
+	"github.com/alihaamedi/monsterslayer/actions"
+	"github.com/alihaamedi/monsterslayer/interaction"
 )
 
 var currentRound = 0
