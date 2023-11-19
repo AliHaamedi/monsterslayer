@@ -1,6 +1,9 @@
 package interaction
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type RoundData struct {
 	Action           string
@@ -47,4 +50,34 @@ func DeclareWinner(winner string) {
 	fmt.Println("GAME OVER!")
 	fmt.Println("-------------------------")
 	fmt.Printf("%v won!\n", winner)
+}
+
+func WriteLogFile(rounds *[]RoundData) {
+	file, err := os.Create("log-file.txt")
+	if err != nil {
+		fmt.Println("failed to create log file...")
+		return
+	}
+
+	for index, value := range *rounds {
+		logEntry := map[string]string{
+			"Round":                 fmt.Sprint(index + 1),
+			"Action":                value.Action,
+			"Player attack damage":  fmt.Sprint(value.PlayerAttackDmg),
+			"Player heal value":     fmt.Sprint(value.PlayerHealValue),
+			"Monster attack damage": fmt.Sprint(value.MonsterAttackDmg),
+			"Player Health":         fmt.Sprint(value.PlayerHealth),
+			"Monster Health":        fmt.Sprint(value.MonsterHealth),
+		}
+
+		logLine := fmt.Sprintln(logEntry)
+		_, err := file.WriteString(logLine)
+		if err != nil {
+			fmt.Println("write to log file failed , exiting ")
+			continue
+		}
+	}
+
+	file.Close()
+	fmt.Println("log file was saved successfully.")
 }
